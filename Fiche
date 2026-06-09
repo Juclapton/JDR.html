@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Interface Citoyen iOS 26</title>
+    <style>
+        :root {
+            /* FOND PREMIUM APPLE : Dégradé de profondeur au lieu du noir pur */
+            --ios-bg-gradient: radial-gradient(circle at 50% -20%, #1a233a 0%, #0d111c 45%, #05070a 100%);
+            
+            /* Cartes translucides style "Liquid Glass" qui laissent passer le fond */
+            --ios-liquid-card: rgba(28, 28, 30, 0.75);
+            --ios-liquid-sub: rgba(44, 44, 46, 0.8);
+            
+            --ios-label: #98989d;
+            --ios-text: #ffffff;
+            --ios-blue: #0a84ff;
+            --ios-red: #ff453a;
+            --ios-amber: #ff9f0a;
+            --ios-border-glass: rgba(255, 255, 255, 0.08);
+            --ios-separator: rgba(84, 84, 88, 0.24);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--ios-bg-gradient);
+            background-attachment: fixed;
+            color: var(--ios-text);
+            padding: 20px 12px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .phone-wrapper {
+            width: 100%;
+            max-width: 393px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* ── DYNAMIC HEADER ── */
+        .profile-container {
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        .char-name {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.6px;
+            outline: none;
+            color: var(--ios-text);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .char-role {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--ios-label);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            outline: none;
+            margin-top: 5px;
+        }
+
+        /* ── SECTION HEADERS ── */
+        .ios-section-header {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--ios-label);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-left: 12px;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+        }
+
+        /* ── LIQUID GLASS BLOCKS (WITH BLUR) ── */
+        .ios-list {
+            background-color: var(--ios-liquid-card);
+            backdrop-filter: blur(20px); /* L'effet de flou de verre signature d'Apple */
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--ios-border-glass);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        .ios-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 16px;
+            min-height: 48px;
+            position: relative;
+        }
+
+        .ios-row:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            left: 16px;
+            height: 0.5px;
+            background-color: var(--ios-separator);
+        }
+
+        .row-label {
+            font-size: 1.05rem;
+            font-weight: 400;
+            color: var(--ios-text);
+        }
+
+        .row-value-input {
+            border: none;
+            background: transparent;
+            color: var(--ios-label);
+            font-size: 1.05rem;
+            text-align: right;
+            outline: none;
+            flex-grow: 1;
+            padding-right: 12px;
+        }
+
+        .full-width-input {
+            border: none;
+            background: transparent;
+            color: var(--ios-text);
+            font-size: 1.05rem;
+            text-align: left;
+            outline: none;
+            flex-grow: 1;
+            padding-right: 12px;
+        }
+
+        .row-value-input:focus, .full-width-input:focus {
+            color: var(--ios-blue);
+        }
+
+        .ios-chevron {
+            color: rgba(255, 255, 255, 0.25);
+            font-size: 0.85rem;
+            font-weight: 400;
+            user-select: none;
+        }
+
+        /* ── STRESS SELECTION ── */
+        .stress-container {
+            display: flex;
+            gap: 6px;
+        }
+
+        .stress-pill {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--ios-liquid-sub);
+            border: 1px solid var(--ios-border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--ios-text);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .stress-pill:active {
+            transform: scale(0.9);
+        }
+
+        .stress-pill.active {
+            background-color: var(--ios-red);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(255, 69, 58, 0.4);
+        }
+
+        /* ── CORE STATS GRID ── */
+        .ios-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+
+        .ios-stat-card {
+            background-color: var(--ios-liquid-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--ios-border-glass);
+            border-radius: 12px;
+            padding: 12px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-lbl {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--ios-label);
+            letter-spacing: 0.2px;
+        }
+
+        .stat-val-box {
+            background-color: var(--ios-liquid-sub);
+            border: 1px solid var(--ios-border-glass);
+            color: var(--ios-amber);
+            font-size: 1.15rem;
+            font-weight: 700;
+            width: 100%;
+            max-width: 52px;
+            text-align: center;
+            padding: 6px 0;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        /* ── SKILLS FIELDS ── */
+        .skill-input {
+            border: none;
+            background: transparent;
+            color: var(--ios-text);
+            font-size: 1.05rem;
+            font-weight: 500;
+            width: 95px;
+            text-align: right;
+            outline: none;
+            padding-right: 36px;
+        }
+        
+        .skill-input:focus { 
+            color: var(--ios-blue); 
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+
+    <!-- HEADER -->
+    <div class="profile-container">
+        <div class="char-name" contenteditable="true">Walter Depes</div>
+        <div class="char-role" contenteditable="true">Psychologue pour IA</div>
+    </div>
+
+    <!-- ÉTAT DE SANTÉ -->
+    <div>
+        <div class="ios-section-header">État de santé</div>
+        <div class="ios-list">
+            <div class="ios-row">
+                <span class="row-label" style="font-weight: 500;">Niveau de stress</span>
+                <div class="stress-container">
+                    <div class="stress-pill" onclick="this.classList.toggle('active')">1</div>
+                    <div class="stress-pill" onclick="this.classList.toggle('active')">2</div>
+                    <div class="stress-pill" onclick="this.classList.toggle('active')">3</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALTERATIONS -->
+    <div>
+        <div class="ios-section-header">Altérations physiques</div>
+        <div class="ios-list">
+            <div class="ios-row">
+                <input type="text" class="full-width-input" placeholder="Aucune" value="Aucune">
+                <span class="ios-chevron">➔</span>
+            </div>
+            <div class="ios-row">
+                <input type="text" class="full-width-input" placeholder="..." value="...">
+                <span class="ios-chevron">➔</span>
+            </div>
+            <div class="ios-row">
+                <input type="text" class="full-width-input" placeholder="..." value="...">
+                <span class="ios-chevron">➔</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVENTAIRE LOGISTIQUE -->
+    <div>
+        <div class="ios-section-header">Inventaire logistique</div>
+        <div class="ios-list">
+            <div class="ios-row">
+                <span class="row-label">Objet Personnel</span>
+                <input type="text" class="row-value-input" value="Code des syndicalistes">
+                <span class="ios-chevron">➔</span>
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Équipement [1]</span>
+                <input type="text" class="row-value-input" value="..." style="color: var(--ios-blue);">
+                <span class="ios-chevron">➔</span>
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Équipement [2]</span>
+                <input type="text" class="row-value-input" value="..." style="color: var(--ios-blue);">
+                <span class="ios-chevron">➔</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- CARACTÉRISTIQUES -->
+    <div>
+        <div class="ios-section-header">Caractéristiques</div>
+        <div class="ios-stats-grid">
+            <div class="ios-stat-card">
+                <span class="stat-lbl">FOR</span>
+                <input type="number" class="stat-val-box" value="40">
+            </div>
+            <div class="ios-stat-card">
+                <span class="stat-lbl">DEX</span>
+                <input type="number" class="stat-val-box" value="50">
+            </div>
+            <div class="ios-stat-card">
+                <span class="stat-lbl">END</span>
+                <input type="number" class="stat-val-box" value="50">
+            </div>
+            <div class="ios-stat-card">
+                <span class="stat-lbl">INT</span>
+                <input type="number" class="stat-val-box" value="80">
+            </div>
+            <div class="ios-stat-card">
+                <span class="stat-lbl">MEN</span>
+                <input type="number" class="stat-val-box" value="70">
+            </div>
+        </div>
+    </div>
+
+    <!-- COMPÉTENCES SECONDAIRES -->
+    <div>
+        <div class="ios-section-header">Compétences de bord</div>
+        <div class="ios-list">
+            
+            <div class="ios-row">
+                <span class="row-label">Courir, sauter, dégager</span>
+                <input type="number" class="skill-input" value="30">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Combat rapproché</span>
+                <input type="number" class="skill-input" value="50">
+            </div>
+
+            <div class="ios-row">
+                <span class="row-label">Mentir, convaincre</span>
+                <input type="number" class="skill-input" value="80">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Combat à distance</span>
+                <input type="number" class="skill-input" value="50">
+            </div>
+
+            <div class="ios-row">
+                <span class="row-label">Discrétion</span>
+                <input type="number" class="skill-input" value="40">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Piloter</span>
+                <input type="number" class="skill-input" value="30">
+            </div>
+
+            <div class="ios-row">
+                <span class="row-label">Intimidation</span>
+                <input type="number" class="skill-input" value="70">
+            </div>
+            
+            <div class="ios-row">
+                <span class="row-label">Connaissance histoire</span>
+                <input type="number" class="skill-input" value="60">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Connaissance espace</span>
+                <input type="number" class="skill-input" value="40">
+            </div>
+
+            <div class="ios-row">
+                <span class="row-label">Perception</span>
+                <input type="number" class="skill-input" value="50">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Soigner</span>
+                <input type="number" class="skill-input" value="30">
+            </div>
+            <div class="ios-row">
+                <span class="row-label">Réparer, programmer</span>
+                <input type="number" class="skill-input" value="40">
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
