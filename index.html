@@ -252,8 +252,8 @@
 
     <!-- HEADER -->
     <div class="profile-container">
-        <div class="char-name" contenteditable="true">Walter Depes</div>
-        <div class="char-role" contenteditable="true">Psychologue pour IA</div>
+        <div class="char-name" id="char-name" contenteditable="true">Walter Depes</div>
+        <div class="char-role" id="char-role" contenteditable="true">Psychologue pour IA</div>
     </div>
 
     <!-- ÉTAT DE SANTÉ -->
@@ -263,9 +263,9 @@
             <div class="ios-row">
                 <span class="row-label" style="font-weight: 500;">Niveau de stress</span>
                 <div class="stress-container">
-                    <div class="stress-pill" onclick="this.classList.toggle('active')">1</div>
-                    <div class="stress-pill" onclick="this.classList.toggle('active')">2</div>
-                    <div class="stress-pill" onclick="this.classList.toggle('active')">3</div>
+                    <div class="stress-pill" data-stress="1" onclick="toggleStress(this)">1</div>
+                    <div class="stress-pill" data-stress="2" onclick="toggleStress(this)">2</div>
+                    <div class="stress-pill" data-stress="3" onclick="toggleStress(this)">3</div>
                 </div>
             </div>
         </div>
@@ -276,15 +276,15 @@
         <div class="ios-section-header">Altérations physiques</div>
         <div class="ios-list">
             <div class="ios-row">
-                <input type="text" class="full-width-input" placeholder="Aucune" value="Aucune">
+                <input type="text" id="alt-1" class="full-width-input" placeholder="Aucune" value="Aucune">
                 <span class="ios-chevron">➔</span>
             </div>
             <div class="ios-row">
-                <input type="text" class="full-width-input" placeholder="..." value="...">
+                <input type="text" id="alt-2" class="full-width-input" placeholder="..." value="...">
                 <span class="ios-chevron">➔</span>
             </div>
             <div class="ios-row">
-                <input type="text" class="full-width-input" placeholder="..." value="...">
+                <input type="text" id="alt-3" class="full-width-input" placeholder="..." value="...">
                 <span class="ios-chevron">➔</span>
             </div>
         </div>
@@ -296,17 +296,17 @@
         <div class="ios-list">
             <div class="ios-row">
                 <span class="row-label">Objet Personnel</span>
-                <input type="text" class="row-value-input" value="Code des syndicalistes">
+                <input type="text" id="inv-obj" class="row-value-input" value="Code des syndicalistes">
                 <span class="ios-chevron">➔</span>
             </div>
             <div class="ios-row">
                 <span class="row-label">Équipement [1]</span>
-                <input type="text" class="row-value-input" value="..." style="color: var(--ios-blue);">
+                <input type="text" id="inv-eq1" class="row-value-input" value="..." style="color: var(--ios-blue);">
                 <span class="ios-chevron">➔</span>
             </div>
             <div class="ios-row">
                 <span class="row-label">Équipement [2]</span>
-                <input type="text" class="row-value-input" value="..." style="color: var(--ios-blue);">
+                <input type="text" id="inv-eq2" class="row-value-input" value="..." style="color: var(--ios-blue);">
                 <span class="ios-chevron">➔</span>
             </div>
         </div>
@@ -318,23 +318,23 @@
         <div class="ios-stats-grid">
             <div class="ios-stat-card">
                 <span class="stat-lbl">FOR</span>
-                <input type="number" class="stat-val-box" value="40">
+                <input type="number" id="stat-for" class="stat-val-box" value="40">
             </div>
             <div class="ios-stat-card">
                 <span class="stat-lbl">DEX</span>
-                <input type="number" class="stat-val-box" value="50">
+                <input type="number" id="stat-dex" class="stat-val-box" value="50">
             </div>
             <div class="ios-stat-card">
                 <span class="stat-lbl">END</span>
-                <input type="number" class="stat-val-box" value="50">
+                <input type="number" id="stat-end" class="stat-val-box" value="50">
             </div>
             <div class="ios-stat-card">
                 <span class="stat-lbl">INT</span>
-                <input type="number" class="stat-val-box" value="80">
+                <input type="number" id="stat-int" class="stat-val-box" value="80">
             </div>
             <div class="ios-stat-card">
                 <span class="stat-lbl">MEN</span>
-                <input type="number" class="stat-val-box" value="70">
+                <input type="number" id="stat-men" class="stat-val-box" value="70">
             </div>
         </div>
     </div>
@@ -346,62 +346,140 @@
             
             <div class="ios-row">
                 <span class="row-label">Courir, sauter, dégager</span>
-                <input type="number" class="skill-input" value="30">
+                <input type="number" id="skill-run" class="skill-input" value="30">
             </div>
             <div class="ios-row">
                 <span class="row-label">Combat rapproché</span>
-                <input type="number" class="skill-input" value="50">
+                <input type="number" id="skill-fight" class="skill-input" value="50">
             </div>
 
             <div class="ios-row">
                 <span class="row-label">Mentir, convaincre</span>
-                <input type="number" class="skill-input" value="80">
+                <input type="number" id="skill-lie" class="skill-input" value="80">
             </div>
             <div class="ios-row">
                 <span class="row-label">Combat à distance</span>
-                <input type="number" class="skill-input" value="50">
+                <input type="number" id="skill-shoot" class="skill-input" value="50">
             </div>
 
             <div class="ios-row">
                 <span class="row-label">Discrétion</span>
-                <input type="number" class="skill-input" value="40">
+                <input type="number" id="skill-stealth" class="skill-input" value="40">
             </div>
             <div class="ios-row">
                 <span class="row-label">Piloter</span>
-                <input type="number" class="skill-input" value="30">
+                <input type="number" id="skill-pilot" class="skill-input" value="30">
             </div>
 
             <div class="ios-row">
                 <span class="row-label">Intimidation</span>
-                <input type="number" class="skill-input" value="70">
+                <input type="number" id="skill-intimidate" class="skill-input" value="70">
             </div>
             
             <div class="ios-row">
                 <span class="row-label">Connaissance histoire</span>
-                <input type="number" class="skill-input" value="60">
+                <input type="number" id="skill-history" class="skill-input" value="60">
             </div>
             <div class="ios-row">
                 <span class="row-label">Connaissance espace</span>
-                <input type="number" class="skill-input" value="40">
+                <input type="number" id="skill-space" class="skill-input" value="40">
             </div>
 
             <div class="ios-row">
                 <span class="row-label">Perception</span>
-                <input type="number" class="skill-input" value="50">
+                <input type="number" id="skill-perceive" class="skill-input" value="50">
             </div>
             <div class="ios-row">
                 <span class="row-label">Soigner</span>
-                <input type="number" class="skill-input" value="30">
+                <input type="number" id="skill-heal" class="skill-input" value="30">
             </div>
             <div class="ios-row">
                 <span class="row-label">Réparer, programmer</span>
-                <input type="number" class="skill-input" value="40">
+                <input type="number" id="skill-code" class="skill-input" value="40">
             </div>
 
         </div>
     </div>
 
 </div>
+
+<script>
+    // Liste de tous les éléments à sauvegarder automatiquement
+    const elementsToSave = [
+        { id: 'char-name', type: 'textText' },
+        { id: 'char-role', type: 'textText' },
+        { id: 'alt-1', type: 'value' },
+        { id: 'alt-2', type: 'value' },
+        { id: 'alt-3', type: 'value' },
+        { id: 'inv-obj', type: 'value' },
+        { id: 'inv-eq1', type: 'value' },
+        { id: 'inv-eq2', type: 'value' },
+        { id: 'stat-for', type: 'value' },
+        { id: 'stat-dex', type: 'value' },
+        { id: 'stat-end', type: 'value' },
+        { id: 'stat-int', type: 'value' },
+        { id: 'stat-men', type: 'value' },
+        { id: 'skill-run', type: 'value' },
+        { id: 'skill-fight', type: 'value' },
+        { id: 'skill-lie', type: 'value' },
+        { id: 'skill-shoot', type: 'value' },
+        { id: 'skill-stealth', type: 'value' },
+        { id: 'skill-pilot', type: 'value' },
+        { id: 'skill-intimidate', type: 'value' },
+        { id: 'skill-history', type: 'value' },
+        { id: 'skill-space', type: 'value' },
+        { id: 'skill-perceive', type: 'value' },
+        { id: 'skill-heal', type: 'value' },
+        { id: 'skill-code', type: 'value' }
+    ];
+
+    // Fonction pour sauvegarder une donnée spécifique
+    function saveData(id, value) {
+        localStorage.setItem('ios26_' + id, value);
+    }
+
+    // Gestion spécifique des boutons de stress (sélection multiple/unique)
+    function toggleStress(pill) {
+        pill.classList.toggle('active');
+        const level = pill.getAttribute('data-stress');
+        const isActive = pill.classList.contains('active');
+        saveData('stress_' + level, isActive ? 'true' : 'false');
+    }
+
+    // Au chargement de la page, on récupère les données sauvegardées
+    window.addEventListener('DOMContentLoaded', () => {
+        // Restaurer les champs textes et numériques
+        elementsToSave.forEach(item => {
+            const el = document.getElementById(item.id);
+            if (el) {
+                const savedValue = localStorage.getItem('ios26_' + item.id);
+                if (savedValue !== null) {
+                    if (item.type === 'textText') {
+                        el.innerText = savedValue;
+                    } else {
+                        el.value = savedValue;
+                    }
+                }
+
+                // Écouter les changements pour sauvegarder en temps réel
+                const eventType = item.type === 'textText' ? 'input' : 'change';
+                el.addEventListener(eventType, () => {
+                    const val = item.type === 'textText' ? el.innerText : el.value;
+                    saveData(item.id, val);
+                });
+            }
+        });
+
+        // Restaurer l'état des boutons de stress
+        document.querySelectorAll('.stress-pill').forEach(pill => {
+            const level = pill.getAttribute('data-stress');
+            const savedStress = localStorage.getItem('ios26_stress_' + level);
+            if (savedStress === 'true') {
+                pill.classList.add('active');
+            }
+        });
+    });
+</script>
 
 </body>
 </html>
