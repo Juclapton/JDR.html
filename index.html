@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Interface Citoyen iOS 26</title>
+    <title>Fiche Perdonnages - One Shot Prospera</title>
     <style>
         :root {
             /* FOND PREMIUM APPLE : Dégradé de profondeur au lieu du noir pur */
@@ -72,6 +72,65 @@
             letter-spacing: 0.8px;
             outline: none;
             margin-top: 5px;
+        }
+
+        /* ── SYSTEME DE DES 100 (NEW) ── */
+        .dice-container {
+            background-color: var(--ios-liquid-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--ios-border-glass);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .dice-btn {
+            background-color: var(--ios-blue);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
+        }
+
+        .dice-btn:active {
+            transform: scale(0.96);
+            opacity: 0.9;
+        }
+
+        .dice-result-box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .dice-label {
+            font-size: 0.75rem;
+            color: var(--ios-label);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        .dice-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--ios-amber);
+            line-height: 1;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .dice-number.rolling {
+            transform: scale(1.1);
+            color: var(--ios-text);
         }
 
         /* ── SECTION HEADERS WITH COUNTERS ── */
@@ -286,13 +345,19 @@
 
 <div class="phone-wrapper">
 
-    <!-- HEADER -->
     <div class="profile-container">
         <div class="char-name" id="char-name" contenteditable="true">Nom & Prénom</div>
         <div class="char-role" id="char-role" contenteditable="true">Votre corporation</div>
     </div>
 
-    <!-- ÉTAT DE SANTÉ -->
+    <div class="dice-container">
+        <button class="dice-btn" onclick="rollD100()">Lancer le D100</button>
+        <div class="dice-result-box">
+            <span class="dice-label">Résultat</span>
+            <span class="dice-number" id="dice-result">--</span>
+        </div>
+    </div>
+
     <div>
         <div class="ios-header-container">
             <div class="ios-section-header">État de santé</div>
@@ -309,7 +374,6 @@
         </div>
     </div>
 
-    <!-- ALTERATIONS -->
     <div>
         <div class="ios-header-container">
             <div class="ios-section-header">Altérations physiques</div>
@@ -330,7 +394,6 @@
         </div>
     </div>
 
-    <!-- INVENTAIRE LOGISTIQUE -->
     <div>
         <div class="ios-header-container">
             <div class="ios-section-header">Inventaire logistique</div>
@@ -354,7 +417,6 @@
         </div>
     </div>
 
-    <!-- CARACTÉRISTIQUES PRINCIPALES -->
     <div>
         <div class="ios-header-container">
             <div class="ios-section-header">Caractéristiques</div>
@@ -389,7 +451,6 @@
         </div>
     </div>
 
-    <!-- COMPÉTENCES SECONDAIRES -->
     <div>
         <div class="ios-header-container">
             <div class="ios-section-header">Compétences de bord</div>
@@ -496,6 +557,36 @@
         { id: 'skill-code', type: 'value' },
         { id: 'skill-heal', type: 'value' }
     ];
+
+    // Fonction du simulateur de dé 100 (NEW)
+    function rollD100() {
+        const resultEl = document.getElementById('dice-result');
+        resultEl.classList.add('rolling');
+        
+        let counter = 0;
+        // Effet visuel de défilement rapide avant le résultat final
+        const interval = setInterval(() => {
+            resultEl.innerText = Math.floor(Math.random() * 100) + 1;
+            counter++;
+            if (counter > 6) {
+                clearInterval(interval);
+                
+                // Résultat final officiel
+                const finalResult = Math.floor(Math.random() * 100) + 1;
+                resultEl.innerText = finalResult;
+                resultEl.classList.remove('rolling');
+                
+                // Gestion des couleurs selon le résultat (Optionnel / RP)
+                if (finalResult === 1) {
+                    resultEl.style.color = 'var(--ios-green)'; // Succès Critique
+                } else if (finalResult === 100) {
+                    resultEl.style.color = 'var(--ios-red)'; // Échec Critique
+                } else {
+                    resultEl.style.color = 'var(--ios-amber)'; // Résultat Standard
+                }
+            }
+        }, 50);
+    }
 
     // Fonction de calcul des totaux en direct
     function updateCalculatedTotals() {
